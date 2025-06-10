@@ -205,17 +205,6 @@
             transform: translateY(-1px);
         }
 
-        .file-upload-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .file-upload-button:disabled:hover {
-            background: linear-gradient(45deg, #444, #666);
-            transform: none;
-        }
-
         .hash-info {
             color: #aaa;
             font-size: 0.85rem;
@@ -272,76 +261,6 @@
             transform: translateY(-1px);
         }
 
-        .download-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .download-button:disabled:hover {
-            background: linear-gradient(45deg, #555, #777);
-            transform: none;
-        }
-
-        .refresh-timer {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(15px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            z-index: 1000;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-        }
-
-        .refresh-timer h3 {
-            color: #ffffff;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        .countdown {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #ffcc00;
-            margin: 1rem 0;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .refresh-now-button {
-            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
-        }
-
-        .refresh-now-button:hover {
-            background: linear-gradient(45deg, #ff5252, #ff7979);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 999;
-        }
-
         .d-none {
             display: none !important;
         }
@@ -372,15 +291,6 @@
                 margin-bottom: 1rem;
                 display: inline-flex;
             }
-
-            .refresh-timer {
-                width: 90%;
-                max-width: 400px;
-            }
-
-            .countdown {
-                font-size: 2.5rem;
-            }
         }
 
         /* Scrollbar Styling */
@@ -404,7 +314,7 @@
 </head>
 <body>
     <div class="container">
-        <a href="../index.html" class="back-button">
+        <a href="../Home.html" class="back-button">
             ← Back
         </a>
 
@@ -414,6 +324,8 @@
         </div>
 
         <div class="converter-container">
+            
+
             <div class="divider"></div>
             
             <div class="section">
@@ -465,6 +377,10 @@
                 </div>
             </div>
 
+
+
+            
+
             <div class="divider"></div>
 
             <div class="result-section">
@@ -478,208 +394,82 @@
         </div>
     </div>
 
-    <!-- Refresh Timer Overlay -->
-    <div class="overlay d-none" id="refresh_overlay"></div>
-    <div class="refresh-timer d-none" id="refresh_timer">
-        <h3>Konversi Berhasil!</h3>
-        <p>Halaman akan di refresh otomatis dalam</p>
-        <div class="countdown" id="countdown">30</div>
-        <p>detik</p>
-        <button class="refresh-now-button" id="refresh_now">
-            Refresh Sekarang
-        </button>
-    </div>
-
     <script>
-        // Variabel untuk manajemen download dan timer
-        let currentDownloadHandler = null;
-        let refreshTimer = null;
-        let countdownInterval = null;
-        let isTimerActive = false;
-        let hasDownloaded = false;
+    	// Variabel untuk manajemen download
+let currentDownloadHandler = null;
 
-        // Fungsi untuk menyimpan dan memuat status auto download
-        function saveAutoDownloadState() {
-            const autoDownloadCheckbox = document.getElementById('auto_download_image');
-            localStorage.setItem('autoDownloadEnabled', autoDownloadCheckbox.checked);
+// Fungsi utama untuk setup download
+function setupDownload() {
+    // Hapus listener sebelumnya jika ada
+    if (currentDownloadHandler) {
+        document.getElementById('download_image').removeEventListener('click', currentDownloadHandler);
+    }
+    
+    // Buat handler baru
+    currentDownloadHandler = function() {
+        const canvas = document.getElementById('canvas_result');
+        if (!canvas || canvas.width === 0) {
+            console.warn('Canvas is empty, nothing to download');
+            return;
         }
-
-        function loadAutoDownloadState() {
-            const savedState = localStorage.getItem('autoDownloadEnabled');
-            if (savedState !== null) {
-                document.getElementById('auto_download_image').checked = savedState === 'true';
-            }
+        
+        try {
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            link.download = `converted-${timestamp}.png`;
+            link.href = canvas.toDataURL('image/png');
+            document.body.appendChild(link);
+            link.click();
+            
+            // Bersihkan setelah 100ms
+            setTimeout(() => {
+                document.body.removeChild(link);
+            }, 100);
+        } catch (error) {
+            console.error('Download failed:', error);
         }
-
-        // Fungsi untuk disable/enable semua tombol
-        function toggleButtonsState(disabled) {
-            const buttons = [
-                document.getElementById('png_to_rttex'),
-                document.getElementById('rttex_to_png'),
-                document.getElementById('download_image'),
-                document.getElementById('auto_download_image')
-            ];
-            
-            buttons.forEach(button => {
-                if (button) {
-                    button.disabled = disabled;
-                }
-            });
-        }
-
-        // Fungsi untuk memulai timer refresh
-        function startRefreshTimer() {
-            if (isTimerActive) return;
-            
-            isTimerActive = true;
-            hasDownloaded = true;
-            
-            // Disable semua tombol
-            toggleButtonsState(true);
-            
-            // Tampilkan overlay dan timer
-            document.getElementById('refresh_overlay').classList.remove('d-none');
-            document.getElementById('refresh_timer').classList.remove('d-none');
-            
-            let timeLeft = 30;
-            const countdownElement = document.getElementById('countdown');
-            
-            // Update countdown setiap detik
-            countdownInterval = setInterval(() => {
-                timeLeft--;
-                countdownElement.textContent = timeLeft;
-                
-                if (timeLeft <= 0) {
-                    clearInterval(countdownInterval);
-                    refreshPage();
-                }
-            }, 1000);
-        }
-
-        // Fungsi untuk refresh halaman
-        function refreshPage() {
-    // Simpan status auto download sebelum refresh
-    saveAutoDownloadState();
-
-    // Clear semua timer
-    if (countdownInterval) clearInterval(countdownInterval);
-    if (refreshTimer) clearTimeout(refreshTimer);
-
-    // Hard refresh halaman
-    window.location.href = window.location.href;
+    };
+    
+    // Pasang listener baru
+    document.getElementById('download_image').addEventListener('click', currentDownloadHandler);
+    
 }
 
-        // Fungsi utama untuk setup download
-        function setupDownload() {
-            // Hapus listener sebelumnya jika ada
-            if (currentDownloadHandler) {
-                document.getElementById('download_image').removeEventListener('click', currentDownloadHandler);
-            }
-            
-            // Buat handler baru
-            currentDownloadHandler = function() {
-                const canvas = document.getElementById('canvas_result');
-                if (!canvas || canvas.width === 0) {
-                    console.warn('Canvas is empty, nothing to download');
-                    return;
-                }
-                
-                try {
-                    const link = document.createElement('a');
-                    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-                    link.download = `converted-${timestamp}.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    document.body.appendChild(link);
-                    link.click();
-                    
-                    // Mulai timer refresh setelah download
-                    if (!hasDownloaded) {
-                        startRefreshTimer();
-                    }
-                    
-                    // Bersihkan setelah 100ms
-                    setTimeout(() => {
-                        document.body.removeChild(link);
-                    }, 100);
-                } catch (error) {
-                    console.error('Download failed:', error);
-                }
-            };
-            
-            // Pasang listener baru
-            document.getElementById('download_image').addEventListener('click', currentDownloadHandler);
-        }
+// Fungsi reset state
+function resetConversionState() {
+    const canvas = document.getElementById('canvas_result');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //canvas.width = 0;
+ //   canvas.height = 0;
+}
 
-        // Fungsi reset state
-        function resetConversionState() {
-            const canvas = document.getElementById('canvas_result');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Reset status download
-            hasDownloaded = false;
-        }
+// Fungsi ketika konversi selesai
+function onConversionComplete() {
+    resetConversionState();
+    setupDownload();
+    
+    // Tampilkan tombol download
+    document.getElementById('download_image').classList.remove('d-none');
+}
 
-        // Fungsi ketika konversi selesai
-        function onConversionComplete(isRttexToPng = false) {
-            resetConversionState();
-            setupDownload();
-            
-            // Untuk PNG to RTTEX, langsung mulai timer
-            if (!isRttexToPng) {
-                startRefreshTimer();
-            } else {
-                // Untuk RTTEX to PNG, tampilkan tombol download
-                document.getElementById('download_image').classList.remove('d-none');
-                
-                // Jika auto download aktif, langsung download
-                if (document.getElementById('auto_download_image').checked) {
-                    setTimeout(() => {
-                        document.getElementById('download_image').click();
-                    }, 500);
-                }
-            }
-        }
+// Event listeners untuk tombol konversi
+document.getElementById('rttex_to_png').addEventListener('click', function() {
+    // Sembunyikan tombol download saat memulai konversi baru
+    document.getElementById('download_image').classList.add('d-none');
+    // Reset state
+    resetConversionState();
+});
 
-        // Event listeners untuk tombol konversi
-        document.getElementById('rttex_to_png').addEventListener('click', function() {
-            if (isTimerActive) return;
-            
-            // Sembunyikan tombol download saat memulai konversi baru
-            document.getElementById('download_image').classList.add('d-none');
-            // Reset state
-            resetConversionState();
-        });
+document.getElementById('png_to_rttex').addEventListener('click', function() {
+    // Sembunyikan tombol download saat memulai konversi baru
+    document.getElementById('download_image').classList.add('d-none');
+    // Reset state
+    resetConversionState();
+});
 
-        document.getElementById('png_to_rttex').addEventListener('click', function() {
-            if (isTimerActive) return;
-            
-            // Sembunyikan tombol download saat memulai konversi baru
-            document.getElementById('download_image').classList.add('d-none');
-            // Reset state
-            resetConversionState();
-        });
-
-        // Event listener untuk tombol refresh sekarang
-        document.getElementById('refresh_now').addEventListener('click', function() {
-            refreshPage();
-        });
-
-        // Event listener untuk auto download toggle
-        document.getElementById('auto_download_image').addEventListener('change', function() {
-            if (!isTimerActive) {
-                saveAutoDownloadState();
-            }
-        });
-
-        // Inisialisasi awal
-        document.addEventListener('DOMContentLoaded', function() {
-            setupDownload();
-            loadAutoDownloadState();
-        });
-
-        // Fungsi publik yang bisa dipanggil dari rttex.js
-        window.onConversionComplete = onConversionComplete;
+// Inisialisasi awal
+setupDownload();
     </script>
 
     <!-- External Scripts -->
