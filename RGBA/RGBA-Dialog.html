@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTPS Dialog Color Picker - Efficient</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2c3e50;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin-top: 50px;
+            margin-bottom: 60px;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        .rainbow-text {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            background: linear-gradient(270deg, #ff3cac, #784ba0, #2b86c5, #00f2fe, #43e97b, #38f9d7, #f7ff00, #ff3cac);
+            background-size: 1600% 1600%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 8s ease infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .dialog-preview1,
+        .dialog-preview2, .dialog-preview {
+            width: 240px;
+            height: 140px;
+            border-radius: 4px;
+            border: 3px solid #95a5a6;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #e1e8ed;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            background: white;
+        }
+
+        .color-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #e1e8ed;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 1.1em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin: 0;
+            
+        }
+
+        .color-control {
+            margin-bottom: 16px;
+        }
+
+        .color-control label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.9em;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slider {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .red-slider { background: linear-gradient(to right, #f8f9fa, #e74c3c); }
+        .green-slider { background: linear-gradient(to right, #f8f9fa, #27ae60); }
+        .blue-slider { background: linear-gradient(to right, #f8f9fa, #3498db); }
+        .alpha-slider { 
+            background-image: 
+                linear-gradient(to right, transparent, #2c3e50),
+                linear-gradient(45deg, #ddd 25%, transparent 25%), 
+                linear-gradient(-45deg, #ddd 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #ddd 75%), 
+                linear-gradient(-45deg, transparent 75%, #ddd 75%);
+            background-size: 100% 100%, 4px 4px, 4px 4px, 4px 4px, 4px 4px;
+        }
+
+        .value-display {
+            min-width: 32px;
+            text-align: center;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.85em;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #e1e8ed;
+        }
+
+        .mini-preview {
+            width: 100%;
+            height: 40px;
+            border: 2px solid #e1e8ed;
+            border-radius: 6px;
+            margin: 12px 0;
+            background-image: 
+                linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
+                linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+                linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+            background-size: 6px 6px;
+            background-position: 0 0, 0 3px, 3px -3px, -3px 0px;
+        }
+        input[type=range] {
+            touch-action: none;
+            user-select: none;
+        }
+
+        .color-overlay {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .main-preview {
+            width: 100%;
+            height: auto;
+            background-image: 
+                linear-gradient(45deg, #e1e8ed 25%, transparent 25%), 
+                linear-gradient(-45deg, #e1e8ed 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #e1e8ed 75%), 
+                linear-gradient(-45deg, transparent 75%, #e1e8ed 75%);
+            background-size: 16px 16px;
+            background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e1e8ed;
+            margin-bottom: 20px;
+        }
+
+        .command-output {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            border: 1px solid #e1e8ed;
+        }
+
+        .command-text {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            color: #2c3e50;
+            font-size: 0.85em;
+            word-break: break-all;
+            margin-bottom: 8px;
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #e1e8ed;
+        }
+
+        .copy-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: 500;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .copy-btn:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        .commands-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #e1e8ed;
+        }
+
+        .commands-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .command-group {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 6px;
+            border: 1px solid #e1e8ed;
+        }
+
+        .command-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .controls-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-section {
+                position: relative;
+                top: auto;
+            }
+            
+            .controls-section {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .commands-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 16px;
+            }
+            
+            .color-section, .preview-section, .commands-section {
+                padding: 20px;
+            }
+            
+            .main-preview {
+                height: 200px;
+            }
+            
+            .dialog-preview123 {
+                width: 180px;
+                height: 110px;
+            }
+        }
+
+        .color-indicator {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #e1e8ed;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .fixed-top-buttons {
+            position: fixed;
+            top: 92%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 9999;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .fixed-top-buttons button {
+            background-color: #3498db;
+            border: none;
+            color: white;
+            padding: 0px 50px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .fixed-top-buttons button:hover {
+            background-color: #2980b9;
+        }
+        .fixed-top-buttons2 {
+            position: fixed;
+            top: 1%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 9999;
+            padding: 8px 16px;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+
+        .fixed-top-buttons2 button {
+            background-color: #ef4444;
+            border: none;
+            color: white;
+            padding: 5px 150px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fixed-top-buttons2 button:hover {
+            background-color: #dc2626;
+            box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        .fixed-top-buttons2 a {
+            background-color: #ef4444;
+            border: none;
+            color: white;
+            padding: 5px 150px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .fixed-top-buttons2 a:hover {
+            background-color: #dc2626;
+            box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="fixed-top-buttons">
+        <button id="edit-bg-btn">Edit Background</button>
+        <button id="edit-border-btn">Edit Border</button>
+    </div>
+    <div class="fixed-top-buttons2">
+    <a href="../Home.html" class="btn-style">Back</a>
+</div>
+    <div class="container">
+        <div class="main-layout">
+            <div class="controls-wrapper">
+                <div class="controls-section">
+                    <!-- Background Color Section -->
+                    <div class="color-section" id="bg-color-section">
+                        <div class="section-header">
+                            <h2>🎨 Background Color</h2>
+                            <div id="bg-indicator" class="color-indicator"></div>
+                        </div>
+                        <div class="main-preview">
+                            <div id="dialog-preview1" class="dialog-preview1"><h1 class="rainbow-text">FLY</h1></div>
+                        </div>
+                        <div class="color-control">
+                            <label>Red (R)</label>
+                            <div class="slider-container">
+                                <input type="range" id="bg-red" class="slider red-slider" min="0" max="255" value="255">
+                                <span id="bg-red-value" class="value-display">255</span>
+                            </div>
+                        </div>
+
+                        <div class="color-control">
+                            <label>Green (G)</label>
+                            <div class="slider-container">
+                                <input type="range" id="bg-green" class="slider green-slider" min="0" max="255" value="255">
+                                <span id="bg-green-value" class="value-display">255</span>
+                            </div>
+                        </div>
+
+                        <div class="color-control">
+                            <label>Blue (B)</label>
+                            <div class="slider-container">
+                                <input type="range" id="bg-blue" class="slider blue-slider" min="0" max="255" value="255">
+                                <span id="bg-blue-value" class="value-display">255</span>
+                            </div>
+                        </div>
+
+                        <div class="color-control">
+                            <label>Alpha (A)</label>
+                            <div class="slider-container">
+                                <input type="range" id="bg-alpha" class="slider alpha-slider" min="0" max="255" value="255">
+                                <span id="bg-alpha-value" class="value-display">255</span>
+                            </div>
+
+                            <br>
+                            <div class="command-group">
+                                <div class="command-label">Background Code [Scroll down to copy code]</div>
+                                <div id="combined-bg-command" class="command-text">set_bg_color|255,255,255,255</div>
+                                <button class="copy-btn" onclick="copyToClipboard('combined-bg-command')">📋 Copy</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Border Color Section -->
+                    <div class="color-section" id="border-color-section">
+                        <div class="section-header">
+                            <h2>🔲 Border Color</h2>
+                            <div id="border-indicator" class="color-indicator"></div>
+                        </div>
+                        <div class="main-preview">
+                            <div id="dialog-preview2" class="dialog-preview2"><h1 class="rainbow-text">FLY</h1></div>
+                        </div>
+                        <div class="color-control">
+                            <label>Red (R)</label>
+                            <div class="slider-container">
+                                <input type="range" id="border-red" class="slider red-slider" min="0" max="255" value="128">
+                                <span id="border-red-value" class="value-display">128</span>
+                            </div>
+                        </div>
+
+                        <div class="color-control">
+                            <label>Green (G)</label>
+                            <div class="slider-container">
+                                <input type="range" id="border-green" class="slider green-slider" min="0" max="255" value="128">
+                                <span id="border-green-value" class="value-display">128</span>
+                            </div>
+                        </div>
+
+                        <div class="color-control">
+                            <label>Blue (B)</label>
+                            <div class="slider-container">
+                                <input type="range" id="border-blue" class="slider blue-slider" min="0" max="255" value="128">
+                                <span id="border-blue-value" class="value-display">128</span>
+                            </div>
+                        </div>
+
+                        <div class="color-control">
+                            <label>Alpha (A)</label>
+                            <div class="slider-container">
+                                <input type="range" id="border-alpha" class="slider alpha-slider" min="0" max="255" value="255">
+                                <span id="border-alpha-value" class="value-display">255</span>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="command-group">
+                            <div class="command-label">Border Code [Scroll down to copy code]</div>
+                            <div id="combined-border-command" class="command-text">set_border_color|128,128,128,255</div>
+                            <button class="copy-btn" onclick="copyToClipboard('combined-border-command')">📋 Copy</button>
+                        </div>
+                    </div>
+                    <div class="commands-section">
+    <h2>🎨 Code Gabungan</h2>
+    <div class="command-output">
+        <div class="command-text" id="combinedCode">
+            set_bg_color|128,0,128,255\nset_border_color|128,0,128,150|
+        </div>
+        <button class="copy-btn" onclick="copyCombinedCode()">Copy Code</button>
+    </div>
+</div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+<iframe id="musicFrame" src="assets/music-player.html" style="display:none;"></iframe>
+    <script>
+        function updateColors() {
+    // Ambil nilai slider background
+    const r = +document.getElementById('bg-red').value;
+    const g = +document.getElementById('bg-green').value;
+    const b = +document.getElementById('bg-blue').value;
+    const a = +document.getElementById('bg-alpha').value;
+
+    // Ambil nilai slider border
+    const br = +document.getElementById('border-red').value;
+    const bg = +document.getElementById('border-green').value;
+    const bb = +document.getElementById('border-blue').value;
+    const ba = +document.getElementById('border-alpha').value;
+
+    // Format warna RGBA
+    const bgColor = `rgba(${r},${g},${b},${a / 255})`;
+    const borderColor = `rgba(${br},${bg},${bb},${ba / 255})`;
+
+    // Update semua dialog preview
+    ['dialog-preview', 'dialog-preview1', 'dialog-preview2'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.backgroundColor = bgColor;
+            el.style.borderColor = borderColor;
+        }
+    });
+
+    // Update indicator warna
+    const bgIndicator = document.getElementById('bg-indicator');
+    if (bgIndicator) {
+        bgIndicator.style.backgroundColor = bgColor;
+    }
+    
+    const borderIndicator = document.getElementById('border-indicator');
+    if (borderIndicator) {
+        borderIndicator.style.backgroundColor = borderColor;
+    }
+
+    // Update text nilai
+    document.getElementById('bg-red-value').textContent = r;
+    document.getElementById('bg-green-value').textContent = g;
+    document.getElementById('bg-blue-value').textContent = b;
+    document.getElementById('bg-alpha-value').textContent = a;
+
+    document.getElementById('border-red-value').textContent = br;
+    document.getElementById('border-green-value').textContent = bg;
+    document.getElementById('border-blue-value').textContent = bb;
+    document.getElementById('border-alpha-value').textContent = ba;
+
+    // Update command text untuk background dan border
+    const bgCommandStr = `set_bg_color|${r},${g},${b},${a}`;
+    const borderCommandStr = `set_border_color|${br},${bg},${bb},${ba}`;
+
+    const bgCommandEl = document.getElementById('combined-bg-command');
+    if (bgCommandEl) {
+        bgCommandEl.textContent = bgCommandStr;
+    }
+    
+    const borderCommandEl = document.getElementById('combined-border-command');
+    if (borderCommandEl) {
+        borderCommandEl.textContent = borderCommandStr;
+    }
+
+    // Update combined code dengan gabungan kedua command
+    const combinedCodeEl = document.getElementById('combinedCode');
+    if (combinedCodeEl) {
+        combinedCodeEl.textContent = `${bgCommandStr}\\n${borderCommandStr}`;
+        // Kalau mau ganti jadi newline, pakai:
+        // combinedCodeEl.textContent = `${bgCommandStr}\n${borderCommandStr}`;
+    }
+}
+
+// Tambahkan event listener ke semua slider
+document.querySelectorAll('input[type="range"]').forEach(slider => {
+    slider.addEventListener('input', updateColors);
+});
+
+// Jalankan saat pertama
+updateColors();
+
+function copyToClipboard(id) {
+    const text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Copied to clipboard!');
+    });
+}
+
+// Fungsi scroll smooth ke elemen target dan fokus slider pertama di dalamnya
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Fokus ke slider pertama dalam section (misal slider red)
+    const firstSlider = section.querySelector('input[type="range"]');
+    if (firstSlider) {
+        firstSlider.focus();
+    }
+}
+
+document.getElementById('edit-bg-btn').addEventListener('click', () => {
+    scrollToSection('bg-color-section');
+});
+
+document.getElementById('edit-border-btn').addEventListener('click', () => {
+    scrollToSection('border-color-section');
+});
+
+function copyCombinedCode() {
+    const text = document.getElementById("combinedCode").innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        alert("Code gabungan berhasil disalin!");
+    }).catch(err => {
+        alert("Gagal menyalin code: " + err);
+    });
+}
+// Di setiap halaman tool (RGBA-Dialog.html, items.html, dll)
+window.addEventListener('DOMContentLoaded', function() {
+    const bgMusic = new Audio('assets/music.mp3');
+    bgMusic.volume = 0.3;
+    bgMusic.loop = true;
+    
+    // Cek apakah musik sedang diputar di halaman sebelumnya
+    if (sessionStorage.getItem('musicPlaying')) {
+        // Coba mainkan musik
+        bgMusic.play().catch(e => {
+            console.log("Autoplay prevented, waiting for user interaction");
+        });
+    }
+    
+    // Simpan referensi musik di window untuk diakses dari halaman lain
+    window.bgMusic = bgMusic;
+    
+    // Saat pengguna meninggalkan halaman
+    window.addEventListener('beforeunload', function() {
+        if (!bgMusic.paused) {
+            sessionStorage.setItem('musicPlaying', 'true');
+        } else {
+            sessionStorage.removeItem('musicPlaying');
+        }
+    });
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Items.dat Tools</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+      body {
+  background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.back-home {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 4px;
+    position: absolute;
+    position: fixed;
+    z-index: 899;
+    margin: 5px;
+    color: #000;
+    border: 2px solid white;
+    transition: all 0.3s ease;
+}
+
+.back-home:hover {
+    background: white;
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tool-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  padding: 30px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: #ffffff;
+}
+
+.tool-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px rgba(255, 255, 255, 0.2);
+  border-color: white;
+}
+
+.header {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.header p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  color: #ffffff;
+}
+
+.file-upload-area {
+  border: 3px dashed white;
+  border-radius: 15px;
+  padding: 40px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+.file-upload-area:hover {
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.file-upload-area.dragover {
+  border-color: white;
+  background: black;
+  transform: scale(1.02);
+  box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+}
+
+.upload-icon {
+  font-size: 3rem;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.btn-custom {
+  background: linear-gradient(45deg, white, #ffffff);
+  border: none;
+  color: #000000;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 255, 136, 0.4);
+  color: #000000;
+  background: linear-gradient(45deg, #ffffff, white);
+}
+
+.btn-custom:active {
+  transform: translateY(0);
+}
+
+.result-area {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 20px;
+  border-left: 4px solid white;
+  color: #ffffff;
+}
+
+.toggle-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: red;
+  transition: .4s;
+  border-radius: 34px;
+  width: 60px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #00FF00;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.hash-display {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  word-break: break-all;
+  color: white;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.file-info {
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+  color: #ffffff;
+}
+
+.file-info h6 {
+  color: white;
+  margin-bottom: 8px;
+}
+
+.progress-bar-container {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  height: 6px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, white, #ffffff);
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+/* Editor modal styles */
+.modal-content {
+  background: #1a1a1a;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  color: #ffffff;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  font-weight: 600;
+  color: white;
+}
+
+.form-control {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  color: #ffffff;
+}
+
+.form-control:focus {
+  background: rgba(0, 0, 0, 0.7);
+  border-color: white;
+  box-shadow: 0 0 0 0.2rem rgba(0, 255, 136, 0.25);
+  color: #ffffff;
+}
+
+.btn-close {
+  filter: invert(1);
+}
+
+/* Download button */
+.download-btn {
+  background: linear-gradient(45deg, white, #ffffff);
+  border: none;
+  color: #000000;
+  padding: 8px 20px;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+}
+.rainbow-text {
+	        position: fixed;
+	right: 50%;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            background: linear-gradient(270deg, #ff3cac, #784ba0, #2b86c5, #00f2fe, #43e97b, #38f9d7, #f7ff00, #ff3cac);
+            background-size: 1600% 1600%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 8s ease infinite;
+            z-index: 9999;
+        }
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+
+.download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 255, 136, 0.4);
+  color: #000000;
+  background: linear-gradient(45deg, #ffffff, white);
+}
+
+.download-btn:disabled {
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Loading spinner */
+.spinner-border {
+  display: none;
+  margin-left: 10px;
+  color: white;
+}
+
+/* Text color fixes */
+.text-muted {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.text-success {
+  color: white !important;
+}
+
+/* Table styles */
+.table {
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.table th {
+  border-color: rgba(0, 255, 136, 0.3);
+  background: rgba(0, 255, 136, 0.1);
+  color: white;
+}
+
+.table td {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 255, 136, 0.05);
+}
+
+/* Alert styles */
+.alert-success {
+  background-color: rgba(0, 255, 136, 0.2);
+  border-color: rgba(0, 255, 136, 0.5);
+  color: #ffffff;
+}
+
+.alert-danger {
+  background-color: rgba(255, 0, 0, 0.2);
+  border-color: rgba(255, 0, 0, 0.5);
+  color: #ffffff;
+}
+
+footer {
+      margin-top: auto;
+      font-size: 0.875rem;
+      color: #777;
+      text-align: center;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1.5rem;
+      width: 100%;
+     
+    }
+    </style>
+  </head>
+  <body>
+      <a href="../Home.html"><button class="back-home">BACK</button></a>
+    <div class="container">
+      <div class="header">
+        <h1><i class="fas fa-cube"></i> Items.dat Tools</h1>
+        <p>Decode and Encode Growtopia Items.dat files</p>
+      </div>
+      
+      <div class="tool-card">
+        <h3 class="mb-4"><i class="fas fa-cogs"></i> Configuration</h3>
+        
+        <div class="toggle-section">
+          <label class="toggle-switch">
+            <input type="checkbox" id="using_txt_mode">
+            <span class="slider"></span>
+          </label>
+          <div>
+            <strong>TXT Mode</strong>
+            <div class="text-muted small">Output as TXT instead of JSON</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="tool-card">
+        <h3 class="mb-4"><i class="fas fa-file-import"></i> Decode Items.dat</h3>
+        <p class="text-muted">Convert items.dat to readable format</p>
+        
+        <div class="file-upload-area" id="decodeUploadArea">
+          <div class="upload-icon">
+            <i class="fas fa-cloud-upload-alt"></i>
+          </div>
+          <h5>Drag & Drop or Click to Select</h5>
+          <p class="text-muted">Select your items.dat file</p>
+          <input type="file" id="decodeFileInput" accept=".dat" style="display: none;">
+        </div>
+        
+        <div id="decodeResult" class="result-area" style="display: none;">
+          <h6><i class="fas fa-check-circle text-success"></i> Decode Complete</h6>
+          <div id="decodeInfo"></div>
+          <div class="hash-display">
+            <strong>Error:</strong> <span id="decode_dat_hash">-</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="decodeProgress"></div>
+          </div>
+          <div class="text-center mt-3"><button class="btn download-btn" id="downloadDecodedBtn" disabled>
+              <i class="fas fa-download"></i> LOADING DOWNLOAD
+            </button>
+            <span class="spinner-border spinner-border-sm text-primary" id="decodeSpinner"></span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="tool-card">
+        <h3 class="mb-4"><i class="fas fa-file-export"></i> Encode to Items.dat</h3>
+        <p class="text-muted">Convert <span id="encodeFormatText">JSON</span> back to items.dat</p>
+        
+        <div class="file-upload-area" id="encodeUploadArea">
+          <div class="upload-icon">
+            <i class="fas fa-cloud-upload-alt"></i>
+          </div>
+          <h5>Drag & Drop or Click to Select</h5>
+          <p class="text-muted">Select your <span id="encodeFileText">JSON</span> file</p>
+          <input type="file" id="encodeFileInput" accept=".json,.txt" style="display: none;">
+        </div>
+        
+        <div id="encodeResult" class="result-area" style="display: none;">
+          <h6><i class="fas fa-check-circle text-success"></i> Encode Complete</h6>
+          <div id="encodeInfo"></div>
+          <div class="hash-display">
+            <strong>Error:</strong> <span id="items_dat_hash_1">-</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="encodeProgress"></div>
+          </div>
+          <div class="text-center mt-3">
+            <button class="btn download-btn" id="downloadEncodedBtn" disabled>
+              <i class="fas fa-download"></i>LOADING DOWNLOAD
+            </button>
+            <span class="spinner-border spinner-border-sm text-primary" id="encodeSpinner"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Items List Table (hidden by default) -->
+      <div id="itemsListDiv" class="tool-card d-none">
+        <h3 class="mb-4"><i class="fas fa-list"></i> Items List</h3>
+        <table id="itemsList" class="table table-striped table-bordered" style="width:100%">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="text-center mt-3 d-none" id="save_items_dat_div">
+          <button class="btn btn-custom" onclick="item_encoder(null, true)">
+            <i class="fas fa-save"></i> Save Items.dat
+          </button>
+          <div class="hash-display mt-3">
+            <strong>Encoded Items dat Hash:</strong> <span id="items_dat_hash_2">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Item Modal -->
+    <div class="modal fade" id="modal-editItems" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Item</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Item ID</label>
+                  <input type="number" class="form-control" id="item_id">
+                </div>
+                <div class="form-group">
+                  <label>Editable Type</label>
+                  <input type="number" class="form-control" id="editable_type">
+                </div>
+                <div class="form-group">
+                  <label>Item Category</label>
+                  <input type="number" class="form-control" id="item_category">
+                </div>
+                <div class="form-group">
+                  <label>Action Type</label>
+                  <input type="number" class="form-control" id="action_type">
+                </div>
+                <div class="form-group">
+                  <label>Hit Sound Type</label>
+                  <input type="number" class="form-control" id="hit_sound_type">
+                </div>
+                <div class="form-group">
+                  <label>Name</label>
+                  <input type="text" class="form-control" id="name">
+                </div>
+                <div class="form-group">
+                  <label>Texture</label>
+                  <input type="text" class="form-control" id="texture">
+                </div>
+                <div class="form-group">
+                  <label>Texture Hash</label>
+                  <input type="number" class="form-control" id="texture_hash">
+                </div>
+                <div class="form-group">
+                  <label>Item Kind</label>
+                  <input type="number" class="form-control" id="item_kind">
+                </div>
+                <div class="form-group">
+                  <label>Val1</label>
+                  <input type="number" class="form-control" id="val1">
+                </div>
+                <div class="form-group">
+                  <label>Texture X</label>
+                  <input type="number" class="form-control" id="texture_x">
+                </div>
+                <div class="form-group">
+                  <label>Texture Y</label>
+                  <input type="number" class="form-control" id="texture_y">
+                </div>
+                <div class="form-group">
+                  <label>Spread Type</label>
+                  <input type="number" class="form-control" id="spread_type">
+                </div>
+                <div class="form-group">
+                  <label>Is Stripey Wallpaper</label>
+                  <input type="number" class="form-control" id="is_stripey_wallpaper">
+                </div>
+                <div class="form-group">
+                  <label>Collision Type</label>
+                  <input type="number" class="form-control" id="collision_type">
+                </div>
+                <div class="form-group">
+                  <label>Break Hits</label>
+                  <input type="text" class="form-control" id="break_hits">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Drop Chance</label>
+                  <input type="number" class="form-control" id="drop_chance">
+                </div>
+                <div class="form-group">
+                  <label>Clothing Type</label>
+                  <input type="number" class="form-control" id="clothing_type">
+                </div>
+                <div class="form-group">
+                  <label>Rarity</label>
+                  <input type="number" class="form-control" id="rarity">
+                </div>
+                <div class="form-group">
+                  <label>Max Amount</label>
+                  <input type="number" class="form-control" id="max_amount">
+                </div>
+                <div class="form-group">
+                  <label>Extra File</label>
+                  <input type="text" class="form-control" id="extra_file">
+                </div>
+                <div class="form-group">
+                  <label>Extra File Hash</label>
+                  <input type="number" class="form-control" id="extra_file_hash">
+                </div>
+                <div class="form-group">
+                  <label>Audio Volume</label>
+                  <input type="number" class="form-control" id="audio_volume">
+                </div>
+                <div class="form-group">
+                  <label>Pet Name</label>
+                  <input type="text" class="form-control" id="pet_name">
+                </div>
+                <div class="form-group">
+                  <label>Pet Prefix</label>
+                  <input type="text" class="form-control" id="pet_prefix">
+                </div>
+                <div class="form-group">
+                  <label>Pet Suffix</label>
+                  <input type="text" class="form-control" id="pet_suffix">
+                </div>
+                <div class="form-group">
+                  <label>Pet Ability</label>
+                  <input type="text" class="form-control" id="pet_ability">
+                </div>
+                <div class="form-group">
+                  <label>Seed Base</label>
+                  <input type="number" class="form-control" id="seed_base">
+                </div>
+                <div class="form-group">
+                  <label>Seed Overlay</label>
+                  <input type="number" class="form-control" id="seed_overlay">
+                </div>
+                <div class="form-group">
+                  <label>Tree Base</label>
+                  <input type="number" class="form-control" id="tree_base">
+                </div>
+                <div class="form-group">
+                  <label>Tree Leaves</label>
+                  <input type="number" class="form-control" id="tree_leaves">
+                </div>
+                <div class="form-group">
+                  <label>Seed Color (A,R,G,B)</label>
+                  <input type="text" class="form-control" id="seed_color">
+                </div>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Seed Overlay Color (A,R,G,B)</label>
+                  <input type="text" class="form-control" id="seed_overlay_color">
+                </div>
+                <div class="form-group">
+                  <label>Grow Time</label>
+                  <input type="number" class="form-control" id="grow_time">
+                </div>
+                <div class="form-group">
+                  <label>Val2</label>
+                  <input type="number" class="form-control" id="val2">
+                </div>
+                <div class="form-group">
+                  <label>Is Raymond</label>
+                  <input type="number" class="form-control" id="is_rayman">
+                </div>
+                <div class="form-group">
+                  <label>Extra Options</label>
+                  <input type="text" class="form-control" id="extra_options">
+                </div>
+                <div class="form-group">
+                  <label>Texture2</label>
+                  <input type="text" class="form-control" id="texture2">
+                </div>
+                <div class="form-group">
+                  <label>Extra Options2</label>
+                  <input type="text" class="form-control" id="extra_options2">
+                </div>
+                <div class="form-group">
+                  <label>Position 80 Data (Hex)</label>
+                  <textarea class="form-control" id="pos_80_data" rows="2"></textarea>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Punch Options</label>
+                  <input type="text" class="form-control" id="punch_options">
+                </div>
+                <div class="form-group">
+                  <label>Data Version 12 (Hex)</label>
+                  <textarea class="form-control" id="data_version_12" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Int Version 13</label>
+                  <input type="number" class="form-control" id="int_version_13">
+                </div>
+                <div class="form-group">
+                  <label>Int Version 14</label>
+                  <input type="number" class="form-control" id="int_version_14">
+                </div>
+                <div class="form-group">
+                  <label>Data Version 15 (Hex)</label>
+                  <textarea class="form-control" id="data_version_15" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>String Version 15</label>
+                  <input type="text" class="form-control" id="str_version_15">
+                </div>
+                <div class="form-group">
+                  <label>String Version 16</label>
+                  <input type="text" class="form-control" id="str_version_16">
+                </div>
+                <div class="form-group">
+                  <label>Int Version 17</label>
+                  <input type="number" class="form-control" id="int_version_17">
+                </div>
+                <div class="form-group">
+                  <label>Int Version 18</label>
+                  <input type="number" class="form-control" id="int_version_18">
+                </div>
+                <div class="form-group">
+                  <label>Int Version 19</label>
+                  <input type="number" class="form-control" id="int_version_19">
+                </div>
+                <div class="form-group">
+                  <label>Int Version 21</label>
+                  <input type="number" class="form-control" id="int_version_21">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="editItemsButton">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+        <footer>&copy; <span id="year">2025</span> | FLY</footer>
+        <br>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+    <script src="items_tools.js"></script>
+    <script>
+// Global variables to store processed data
+let decodedData = null;
+let encodedData = null;
+let isProcessing = false;
+
+// Reset all processing states and UI
+function resetAllStates() {
+  // Reset global data
+  decodedData = null;
+  encodedData = null;
+  isProcessing = false;
+  
+  // Reset file inputs
+  const decodeInput = document.getElementById('decodeFileInput');
+  const encodeInput = document.getElementById('encodeFileInput');
+  if (decodeInput) decodeInput.value = '';
+  if (encodeInput) encodeInput.value = '';
+  
+  // Reset upload areas
+  resetDragDropArea(document.getElementById('decodeUploadArea'));
+  resetDragDropArea(document.getElementById('encodeUploadArea'));
+  
+  // Hide result sections
+  const decodeResult = document.getElementById('decodeResult');
+  const encodeResult = document.getElementById('encodeResult');
+  if (decodeResult) decodeResult.style.display = 'none';
+  if (encodeResult) encodeResult.style.display = 'none';
+  
+  // Reset progress bars
+  const decodeProgress = document.getElementById('decodeProgress');
+  const encodeProgress = document.getElementById('encodeProgress');
+  if (decodeProgress) decodeProgress.style.width = '0%';
+  if (encodeProgress) encodeProgress.style.width = '0%';
+  
+  // Reset download buttons
+  const downloadDecodedBtn = document.getElementById('downloadDecodedBtn');
+  const downloadEncodedBtn = document.getElementById('downloadEncodedBtn');
+  if (downloadDecodedBtn) {
+    downloadDecodedBtn.disabled = true;
+    downloadDecodedBtn.innerHTML = '<i class="fas fa-download"></i> LOADING DOWNLOAD';
+  }
+  if (downloadEncodedBtn) {
+    downloadEncodedBtn.disabled = true;
+    downloadEncodedBtn.innerHTML = '<i class="fas fa-download"></i> LOADING DOWNLOAD';
+  }
+  
+  // Hide spinners
+  const decodeSpinner = document.getElementById('decodeSpinner');
+  const encodeSpinner = document.getElementById('encodeSpinner');
+  if (decodeSpinner) decodeSpinner.style.display = 'none';
+  if (encodeSpinner) encodeSpinner.style.display = 'none';
+}
+
+// Update the UI based on TXT mode toggle
+document.getElementById('using_txt_mode').addEventListener('change', function() {
+  const formatText = this.checked ? 'TXT' : 'JSON';
+  const acceptValue = this.checked ? '.txt' : '.json,.txt';
+
+  const encodeFormatText = document.getElementById('encodeFormatText');
+  const encodeFileText = document.getElementById('encodeFileText');
+  
+  if (encodeFormatText) encodeFormatText.textContent = formatText;
+  if (encodeFileText) encodeFileText.textContent = formatText;
+
+  // Update file input accept attribute
+  const encodeFileInput = document.getElementById('encodeFileInput');
+  if (encodeFileInput) encodeFileInput.accept = acceptValue;
+
+  // Update encode upload area text
+  const encodeArea = document.getElementById('encodeUploadArea');
+  if (encodeArea) {
+    const subtitle = encodeArea.querySelector('p');
+    if (subtitle) subtitle.innerHTML = `Select your ${formatText} file`;
+  }
+
+  // Reset all states when mode changes
+  resetAllStates();
+});
+
+// File upload area interactions
+const decodeUploadArea = document.getElementById('decodeUploadArea');
+const decodeFileInput = document.getElementById('decodeFileInput');
+const encodeUploadArea = document.getElementById('encodeUploadArea');
+const encodeFileInput = document.getElementById('encodeFileInput');
+
+// Decode file upload
+if (decodeUploadArea && decodeFileInput) {
+  decodeUploadArea.addEventListener('click', () => {
+    if (!isProcessing) decodeFileInput.click();
+  });
+}
+
+// Encode file upload  
+if (encodeUploadArea && encodeFileInput) {
+  encodeUploadArea.addEventListener('click', () => {
+    if (!isProcessing) encodeFileInput.click();
+  });
+}
+
+function updateUploadAreaText(area, fileName) {
+  if (!area) return;
+  
+  const icon = area.querySelector('.upload-icon');
+  if (icon) icon.innerHTML = '<i class="fas fa-check-circle text-success"></i>';
+  
+  const title = area.querySelector('h5');
+  if (title) title.textContent = 'File Selected';
+  
+  const subtitle = area.querySelector('p');
+  if (subtitle) subtitle.innerHTML = `<strong>${fileName}</strong>`;
+}
+
+// Progress bar animation
+function animateProgress(element, start, end, duration) {
+  if (!element) return;
+  
+  const startTime = performance.now();
+  
+  function animate(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const value = start + (end - start) * progress;
+    
+    element.style.width = value + '%';
+    
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  }
+  
+  requestAnimationFrame(animate);
+}
+
+// Show alert function
+function showAlert(message, type) {
+  const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+  const icon = type === 'success' ? 'check-circle' : 'exclamation-triangle';
+  
+  const alertDiv = document.createElement('div');
+  alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+  alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+  alertDiv.innerHTML = `
+    <i class="fas fa-${icon}"></i> ${message}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  `;
+  
+  document.body.appendChild(alertDiv);
+  
+  setTimeout(() => {
+    if (alertDiv.parentNode) {
+      alertDiv.parentNode.removeChild(alertDiv);
+    }
+  }, 5000);
+}
+
+// Reset only drag & drop area
+function resetDragDropArea(area) {
+  if (!area) return;
+  
+  const icon = area.querySelector('.upload-icon');
+  if (icon) icon.innerHTML = '<i class="fas fa-cloud-upload-alt"></i>';
+  
+  const title = area.querySelector('h5');
+  if (title) title.textContent = 'Drag & Drop or Click to Select';
+  
+  const subtitle = area.querySelector('p');
+  if (subtitle) {
+    // Also reset dragover class if any
+    area.classList.remove('dragover');
+    
+    if (area.id === 'encodeUploadArea') {
+      const usingTxtMode = document.getElementById('using_txt_mode');
+      const format = (usingTxtMode && usingTxtMode.checked) ? 'TXT' : 'JSON';
+      subtitle.innerHTML = `Select your ${format} file`;
+    } else {
+      subtitle.innerHTML = 'Select your items.dat file';
+    }
+  }
+}
+
+// Download file helper function
+function downloadFile(filename, content, mimeType) {
+  try {
+    let blob;
+    if (content instanceof ArrayBuffer) {
+      blob = new Blob([content], { type: mimeType });
+    } else if (typeof content === 'string') {
+      blob = new Blob([content], { type: mimeType });
+    } else {
+      blob = new Blob([JSON.stringify(content, null, 2)], { type: mimeType });
+    }
+    
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 100);
+  } catch (error) {
+    console.error('Download error:', error);
+    showAlert('Error downloading file: ' + error.message, 'error');
+  }
+}
+
+// Centralized file processing function for decode
+function processDecodeFile(file) {
+  if (isProcessing) return false;
+  
+  if (!file.name.toLowerCase().endsWith('.dat')) {
+    showAlert('Please select a .dat file', 'error');
+    const decodeInput = document.getElementById('decodeFileInput');
+    if (decodeInput) decodeInput.value = '';
+    resetDragDropArea(decodeUploadArea);
+    return false;
+  }
+  
+  isProcessing = true;
+  updateUploadAreaText(decodeUploadArea, file.name);
+  
+  // Show processing UI
+  const decodeResult = document.getElementById('decodeResult');
+  if (decodeResult) decodeResult.style.display = 'block';
+  
+  const downloadBtn = document.getElementById('downloadDecodedBtn');
+  if (downloadBtn) {
+    downloadBtn.disabled = true;
+    downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESSING...';
+  }
+  
+  const progressBar = document.getElementById('decodeProgress');
+  if (progressBar) {
+    progressBar.style.width = '0%';
+    animateProgress(progressBar, 0, 100, 1500);
+  }
+  
+  // Process the file
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const arrayBuffer = e.target.result;
+      
+      // Process with the external function
+      if (typeof item_decoder === 'function') {
+        // Create a temporary file object for the decoder
+        const fileForDecoder = new File([arrayBuffer], file.name, { type: file.type });
+        
+        // Call the decoder function
+        const result = item_decoder(fileForDecoder);
+        
+        if (result) {
+          decodedData = result;
+          
+          // Update file info
+          const decodeInfo = document.getElementById('decodeInfo');
+          if (decodeInfo) {
+            decodeInfo.innerHTML = `
+              <div class="file-info">
+                <h6>File Information</h6>
+                <div><strong>Name:</strong> ${file.name}</div>
+                <div><strong>Size:</strong> ${(file.size / 1024).toFixed(2)} KB</div>
+                <div><strong>Last Modified:</strong> ${new Date(file.lastModified).toLocaleString()}</div>
+                <div><strong>Status:</strong> <span class="text-success">Successfully Decoded</span></div>
+              </div>
+            `;
+          }
+          
+          // Enable download button
+          setTimeout(() => {
+            if (downloadBtn) {
+              downloadBtn.disabled = false;
+              downloadBtn.innerHTML = '<i class="fas fa-download"></i> DOWNLOAD';
+            }
+          }, 500);
+          
+          showAlert('File decoded successfully!', 'success');
+        } else {
+  setTimeout(() => {
+    if (progressBar) {
+      progressBar.style.width = '100%';
+      showAlert('File decoded successfully!', 'success');
+    }
+  }, 2000);
+}
+        
+        
+      } else {
+        throw new Error('item_decoder function not found');
+      }
+    } catch (error) {
+      console.error('Decode error:', error);
+      showAlert('Error decoding file: ' + error.message, 'error');
+      if (decodeResult) decodeResult.style.display = 'none';
+      decodedData = null;
+      resetAllStates();
+      
+      if (downloadBtn) {
+        downloadBtn.disabled = true;
+        downloadBtn.innerHTML = '<i class="fas fa-download"></i> LOADING DOWNLOAD';
+      }
+    }
+    
+    isProcessing = false;
+    
+    // Reset drag & drop area after processing
+    setTimeout(() => {
+      resetDragDropArea(decodeUploadArea);
+      resetAllStates();
+    }, 1000);
+  };
+  
+  reader.onerror = function(error) {
+    console.error('File read error:', error);
+    showAlert('Error reading file', 'error');
+    resetDragDropArea(decodeUploadArea);
+    const result = document.getElementById('decodeResult');
+    if (result) result.style.display = 'none';
+    decodedData = null;
+    isProcessing = false; // Reset isProcessing here
+  };
+  
+  reader.readAsArrayBuffer(file);
+  return true;
+}
+
+// Centralized file processing function for encode
+function processEncodeFile(file) {
+  if (isProcessing) return false;
+  
+  const usingTxtMode = document.getElementById('using_txt_mode');
+  const isTxtMode = usingTxtMode && usingTxtMode.checked;
+  const expectedExt = isTxtMode ? '.txt' : '.json';
+  
+  if (!file.name.toLowerCase().endsWith(expectedExt)) {
+    showAlert(`Please select a ${expectedExt} file`, 'error');
+    const encodeInput = document.getElementById('encodeFileInput');
+    if (encodeInput) encodeInput.value = '';
+    resetDragDropArea(encodeUploadArea);
+    return false;
+  }
+  
+  isProcessing = true;
+  updateUploadAreaText(encodeUploadArea, file.name);
+  
+  // Show processing UI
+  const encodeResult = document.getElementById('encodeResult');
+  if (encodeResult) encodeResult.style.display = 'block';
+  
+  const downloadBtn = document.getElementById('downloadEncodedBtn');
+  if (downloadBtn) {
+    downloadBtn.disabled = true;
+    downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESSING...';
+  }
+  
+  const progressBar = document.getElementById('encodeProgress');
+  if (progressBar) {
+    progressBar.style.width = '0%';
+    animateProgress(progressBar, 0, 100, 1500);
+  }
+  
+  // Process the file
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const content = e.target.result;
+      
+      // Process with the external function
+      if (typeof item_encoder === 'function') {
+        // Create a temporary file object for the encoder
+        const fileForEncoder = new File([content], file.name, { type: file.type });
+        
+        // Call the encoder function
+        const result = item_encoder(fileForEncoder);
+        
+        if (result) {
+          encodedData = result;
+          
+          // Update file info
+          const encodeInfo = document.getElementById('encodeInfo');
+          if (encodeInfo) {
+            encodeInfo.innerHTML = `
+              <div class="file-info">
+                <h6>File Information</h6>
+                <div><strong>Name:</strong> ${file.name}</div>
+                <div><strong>Size:</strong> ${(file.size / 1024).toFixed(2)} KB</div>
+                <div><strong>Last Modified:</strong> ${new Date(file.lastModified).toLocaleString()}</div>
+                <div><strong>Status:</strong> <span class="text-success">Successfully Encoded</span></div>
+              </div>
+            `;
+          }
+          
+          // Enable download button
+          setTimeout(() => {
+            if (downloadBtn) {
+              downloadBtn.disabled = false;
+              downloadBtn.innerHTML = '<i class="fas fa-download"></i> DOWNLOAD';
+            }
+          }, 500);
+          
+          showAlert('File encoded successfully!', 'success');
+        } else {
+  setTimeout(() => {
+    if (progressBar) {
+      progressBar.style.width = '100%';
+      showAlert('File encoder successfully!', 'success');
+    }
+  }, 2000);
+}
+      } else {
+        throw new Error('item_encoder function not found');
+      }
+    } catch (error) {
+      console.error('Encode error:', error);
+      showAlert('Error encoding file: ' + error.message, 'error');
+      if (encodeResult) encodeResult.style.display = 'none';
+      encodedData = null;
+      resetAllStates();
+      
+      if (downloadBtn) {
+        downloadBtn.disabled = true;
+        downloadBtn.innerHTML = '<i class="fas fa-download"></i> LOADING DOWNLOAD';
+      }
+    }
+    
+    isProcessing = false;
+    
+    // Reset drag & drop area after processing
+    setTimeout(() => {
+      resetDragDropArea(encodeUploadArea);
+      resetAllStates();
+    }, 1000);
+  };
+  
+  reader.onerror = function(error) {
+    console.error('File read error:', error);
+    showAlert('Error reading file', 'error');
+    resetDragDropArea(encodeUploadArea);
+    const result = document.getElementById('encodeResult');
+    if (result) result.style.display = 'none';
+    encodedData = null;
+    isProcessing = false; // Reset isProcessing here
+  };
+  
+  reader.readAsText(file);
+  return true;
+}
+
+
+// Setup download buttons
+const downloadDecodedBtn = document.getElementById('downloadDecodedBtn');
+if (downloadDecodedBtn) {
+  downloadDecodedBtn.addEventListener('click', function() {
+    if (!decodedData || this.disabled) return;
+    
+    const usingTxtMode = document.getElementById('using_txt_mode');
+    const isTxtMode = usingTxtMode && usingTxtMode.checked;
+    const filename = isTxtMode ? 'decoded_items.txt' : 'decoded_items.json';
+    const mimeType = isTxtMode ? 'text/plain' : 'application/json';
+    
+    const spinner = document.getElementById('decodeSpinner');
+    if (spinner) spinner.style.display = 'inline-block';
+    this.disabled = true;
+    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> DOWNLOADING...';
+    
+    setTimeout(() => {
+      downloadFile(filename, decodedData, mimeType);
+      if (spinner) spinner.style.display = 'none';
+      this.disabled = false;
+      this.innerHTML = '<i class="fas fa-download"></i> DOWNLOAD';
+    }, 300);
+  });
+}
+
+const downloadEncodedBtn = document.getElementById('downloadEncodedBtn');
+if (downloadEncodedBtn) {
+  downloadEncodedBtn.addEventListener('click', function() {
+    if (!encodedData || this.disabled) return;
+    
+    const spinner = document.getElementById('encodeSpinner');
+    if (spinner) spinner.style.display = 'inline-block';
+    this.disabled = true;
+    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> DOWNLOADING...';
+    
+    setTimeout(() => {
+      downloadFile('items.dat', encodedData, 'application/octet-stream');
+      if (spinner) spinner.style.display = 'none';
+      this.disabled = false;
+      this.innerHTML = '<i class="fas fa-download"></i> DOWNLOAD';
+    }, 300);
+  });
+}
+
+// File input change handlers - now using centralized processing
+if (decodeFileInput) {
+  decodeFileInput.addEventListener('change', (e) => {
+    if (e.target.files.length && !isProcessing) {
+      processDecodeFile(e.target.files[0]);
+    }
+  });
+}
+
+if (encodeFileInput) {
+  encodeFileInput.addEventListener('change', (e) => {
+    if (e.target.files.length && !isProcessing) {
+      processEncodeFile(e.target.files[0]);
+    }
+  });
+}
+
+// Handle drag and drop for decode
+if (decodeUploadArea) {
+  decodeUploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    if (!isProcessing) decodeUploadArea.classList.add('dragover');
+  });
+
+  decodeUploadArea.addEventListener('dragleave', () => {
+    decodeUploadArea.classList.remove('dragover');
+  });
+
+  decodeUploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    decodeUploadArea.classList.remove('dragover');
+    
+    if (e.dataTransfer.files.length && !isProcessing) {
+      const file = e.dataTransfer.files[0];
+      // Update file input
+      if (decodeFileInput) {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        decodeFileInput.files = dt.files;
+      }
+      processDecodeFile(file);
+    }
+  });
+}
+
+// Handle drag and drop for encode
+if (encodeUploadArea) {
+  encodeUploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    if (!isProcessing) encodeUploadArea.classList.add('dragover');
+  });
+
+  encodeUploadArea.addEventListener('dragleave', () => {
+    encodeUploadArea.classList.remove('dragover');
+  });
+
+  encodeUploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    encodeUploadArea.classList.remove('dragover');
+    
+    if (e.dataTransfer.files.length && !isProcessing) {
+      const file = e.dataTransfer.files[0];
+      // Update file input
+      if (encodeFileInput) {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        encodeFileInput.files = dt.files;
+      }
+      processEncodeFile(file);
+    }
+  });
+}
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize states
+  resetAllStates();
+  
+  // Hide any unused elements
+  const elementsToHide = [
+    'decode_items_dat',
+    'decode_items_dat_editor', 
+    'encode_items_dat'
+  ];
+  
+  elementsToHide.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) element.style.display = 'none';
+  });
+  
+  console.log('Items.dat Tools initialized');
+});
+
+</script>
+  </body>
+</html>

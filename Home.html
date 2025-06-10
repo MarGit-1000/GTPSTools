@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTPS Free Tools</title>
+    <style>
+        /* ===== RESET & BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            padding-top: 80px;
+        }
+
+        /* ===== HAMBURGER MENU ===== */
+        .hamburger-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            cursor: pointer;
+            background: rgba(26, 26, 26, 0.95);
+            border: 2px solid #333333;
+            border-radius: 12px;
+            padding: 12px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .hamburger-menu:hover {
+            border-color: #555555;
+            background: rgba(42, 42, 42, 0.95);
+            transform: scale(1.05);
+        }
+
+        .hamburger-icon {
+            width: 25px;
+            height: 20px;
+            position: relative;
+            transform: rotate(0deg);
+            transition: .5s ease-in-out;
+        }
+
+        .hamburger-icon span {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 3px;
+            opacity: 1;
+            left: 0;
+            transform: rotate(0deg);
+            transition: .25s ease-in-out;
+        }
+
+        .hamburger-icon span:nth-child(1) {
+            top: 0px;
+        }
+
+        .hamburger-icon span:nth-child(2),
+        .hamburger-icon span:nth-child(3) {
+            top: 8px;
+        }
+
+        .hamburger-icon span:nth-child(4) {
+            top: 16px;
+        }
+
+        .hamburger-icon.open span:nth-child(1) {
+            top: 8px;
+            width: 0%;
+            left: 50%;
+        }
+
+        .hamburger-icon.open span:nth-child(2) {
+            transform: rotate(45deg);
+        }
+
+        .hamburger-icon.open span:nth-child(3) {
+            transform: rotate(-45deg);
+        }
+
+        .hamburger-icon.open span:nth-child(4) {
+            top: 8px;
+            width: 0%;
+            left: 50%;
+        }
+
+        /* ===== SIDE MENU ===== */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 2px solid #333333;
+            z-index: 999;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 80px 20px 20px 20px;
+            overflow-y: auto;
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .side-menu.open {
+            right: 0;
+        }
+
+        .menu-category {
+            margin-bottom: 25px;
+        }
+
+        .menu-category-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #333333, #1a1a1a);
+            border-radius: 8px;
+            border-left: 4px solid #555555;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-item {
+            display: block;
+            padding: 12px 18px;
+            margin-bottom: 8px;
+            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+            border: 2px solid #333333;
+            border-radius: 10px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            margin-left: 10px;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .menu-item:hover::before {
+            left: 100%;
+        }
+
+        .menu-item:hover {
+            border-color: #555555;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            transform: translateX(-5px);
+        }
+
+        .menu-item.active {
+            border-color: #ffffff;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            margin-left: 0;
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .menu-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .container {
+            text-align: center;
+            max-width: 800px;
+            width: 90%;
+            padding: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleSlide 1s ease-out;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #888888;
+            margin-bottom: 1.2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.3s forwards;
+        }
+
+        .credits-main {
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.6s forwards;
+            line-height: 1;
+        }
+
+        /* ===== TYPEWRITER EFFECT ===== */
+        .typewriter-main {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            position: relative;
+            display: inline-block;
+            height: 1.5em;
+            min-width: 180px;
+        }
+
+        .typewriter-text {
+            white-space: nowrap;
+            display: inline-block;
+            vertical-align: baseline;
+            overflow: visible;
+        }
+
+        .typewriter-cursor {
+            color: #ffffff;
+            font-weight: normal;
+            display: inline-block;
+            vertical-align: baseline;
+            line-height: 1;
+            margin-left: 2px;
+            opacity: 1;
+            transition: opacity 0.1s ease;
+        }
+
+        .typewriter-cursor.blinking {
+            animation: blink 1s infinite;
+        }
+
+        /* ===== TOOLS SECTION ===== */
+        .tools-section {
+            padding: 0 2rem 50px 2rem;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .tools-category {
+            margin-bottom: 60px;
+        }
+
+        .category-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .category-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #333333, #555555, #333333);
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 0 auto;
+        }
+
+        .tool-button {
+            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+            border: 2px solid #333333;
+            color: #ffffff;
+            padding: 25px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: block;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+
+        .tool-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.1));
+        }
+
+        .tool-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .tool-description {
+            font-size: 0.9rem;
+            color: #aaaaaa;
+            line-height: 1.4;
+            margin-top: 5px;
+        }
+
+        .tool-button.center-active {
+            border-color: #ffffff;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            transform: scale(1.05) translateY(0);
+        }
+
+        .tool-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .tool-button:hover::before {
+            left: 100%;
+        }
+
+        .tool-button:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: #555555;
+            box-shadow: 0 12px 30px rgba(255, 255, 255, 0.15);
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+        }
+
+        .tool-button:hover .tool-icon {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+
+        .tool-button:active {
+            transform: translateY(-4px) scale(0.98);
+        }
+
+        .tool-button.animate {
+            animation: fadeInScale 0.6s ease-out forwards;
+        }
+        
+        /* Music Confirmation Dialog */
+.music-confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.music-confirm-box {
+    background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+    border: 2px solid #333333;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.music-confirm-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.music-confirm-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.music-confirm-btn {
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid #333333;
+    transition: all 0.3s ease;
+}
+
+.music-confirm-btn.no {
+    background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+    color: #ffffff;
+}
+
+.music-confirm-btn.yes {
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    color: #ffffff;
+}
+
+.music-confirm-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.music-confirm-btn.no:hover {
+    border-color: #ff4444;
+}
+
+.music-confirm-btn.yes:hover {
+    border-color: #44ff44;
+}
+
+        /* ===== FOOTER ===== */
+        .credits {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.9rem;
+            color: #666666;
+            font-weight: 300;
+            opacity: 0.8;
+        }
+
+        /* ===== BACKGROUND ELEMENTS ===== */
+        .background-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes titleSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.1; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.3; }
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+            
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .category-title {
+                font-size: 1.8rem;
+            }
+            
+            .tools-category {
+                margin-bottom: 40px;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .tools-section {
+                padding: 0 1rem 50px 1rem;
+            }
+            
+            .side-menu {
+                width: 300px;
+                right: -300px;
+            }
+            
+            .hamburger-menu {
+                top: 15px;
+                right: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .credits-main {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== NAVIGATION ===== -->
+    <div class="hamburger-menu" onclick="toggleMenu()" aria-label="Toggle Menu" role="button" tabindex="0">
+        <div class="hamburger-icon" id="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
+
+    <div class="side-menu" id="side-menu">
+        <a href="#home" class="menu-item active" data-tool="home" role="menuitem">🏠 Home</a>
+        
+        <div class="menu-category">
+            <div class="menu-category-title">🎮 GTPS Tools</div>
+            <a href="#item-id-finder" class="menu-item" data-tool="item-id-finder" role="menuitem">RGBA Dialog</a>
+            <a href="#world-generator" class="menu-item" data-tool="world-generator" role="menuitem">Items.dat Decode/Encode</a>
+            <a href="#server-status" class="menu-item" data-tool="server-status" role="menuitem">Hash Generator</a>
+            <a href="#text-to-dialog" class="menu-item" data-tool="text-to-dialog" role="menuitem">Rttex Tools</a>
+        </div>
+
+        <div class="menu-category">
+            <div class="menu-category-title">💻 Code Tools</div>
+            <a href="#cpp-obfuscator" class="menu-item" data-tool="cpp-obfuscator" role="menuitem">CPP Obfuscator</a>
+            <a href="#code-formatter" class="menu-item" data-tool="code-formatter" role="menuitem">Code Formatter</a>
+            <a href="#regex-tester" class="menu-item" data-tool="regex-tester" role="menuitem">Regex Tester</a>
+        </div>
+
+        <div class="menu-category">
+            <div class="menu-category-title">🛠️ Utility Tools</div>
+            <a href="#hash-generator" class="menu-item" data-tool="hash-generator" role="menuitem">Hash Generator</a>
+            <a href="#json-formatter" class="menu-item" data-tool="json-formatter" role="menuitem">JSON Formatter</a>
+            <a href="#base64-converter" class="menu-item" data-tool="base64-converter" role="menuitem">Base64 Converter</a>
+        </div>
+    </div>
+
+    <!-- ===== BACKGROUND ELEMENTS ===== -->
+    <div class="background-particle" style="top: 10%; left: 10%; animation-delay: 0s;"></div>
+    <div class="background-particle" style="top: 20%; left: 80%; animation-delay: 1s;"></div>
+    <div class="background-particle" style="top: 60%; left: 20%; animation-delay: 2s;"></div>
+    <div class="background-particle" style="top: 80%; left: 70%; animation-delay: 3s;"></div>
+    <div class="background-particle" style="top: 30%; left: 90%; animation-delay: 4s;"></div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <section id="home" class="container">
+        <h1 class="title">GTPS Free Tools</h1>
+        <p class="subtitle">Koleksi tools gratis untuk kebutuhan development Anda</p>
+        
+        <div class="credits-main">
+            <div class="typewriter-main">
+                <span class="typewriter-text" id="typewriter-text"></span>
+                <span class="typewriter-cursor" id="typewriter-cursor">|</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="tools-section">
+        <!-- GTPS Tools Section -->
+        <div class="tools-category">
+            <h2 class="category-title">🎮 GTPS Tools</h2>
+            <div class="tools-grid">
+                <a href="RGBA/RGBA-Dialog.html" class="tool-button" data-tool="item-id-finder" onclick="navigateToTool('item-id-finder', event)" role="button" aria-label="Item ID Finder">
+                    <div class="tool-icon">🎨</div>
+                    <div class="tool-title">RGBA Dialog</div>
+                    <div class="tool-description">Cari RGBA Dengan mudah.</div>
+                </a>
+                <a href="items/items.html" class="tool-button" data-tool="world-generator" onclick="navigateToTool('world-generator', event)" role="button" aria-label="World Generator">
+                    <div class="tool-icon">♻️</div>
+                    <div class="tool-title">Items.dat Decode/Encode</div>
+                    <div class="tool-description">Decode/Encode Items.dat mu dengan cepat.</div>
+                </a>
+                <a href="Hash/hash.html" class="tool-button" data-tool="server-status" onclick="navigateToTool('server-status', event)" role="button" aria-label="Server Status Checker">
+                    <div class="tool-icon">🛠</div>
+                    <div class="tool-title">Hash Generator</div>
+                    <div class="tool-description">Generator hash cepat untuk verifikasi dan identifikasi file.</div>
+                </a>
+                <a href="Rttex/rttex.html" class="tool-button" data-tool="text-to-dialog" onclick="navigateToTool('text-to-dialog', event)" role="button" aria-label="Text to Dialog">
+                    <div class="tool-icon">📁</div>
+                    <div class="tool-title">Rttex Tools</div>
+                    <div class="tool-description">Konversi gambar menjadi file rttex.</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Code Tools Section -->
+        <div class="tools-category">
+            <h2 class="category-title">💻 Code Tools</h2>
+            <div class="tools-grid">
+                <a href="#" class="tool-button" data-tool="cpp-obfuscator" onclick="navigateToTool('cpp-obfuscator', event)" role="button" aria-label="CPP Obfuscator">
+                    <div class="tool-icon">🔒</div>
+                    <div class="tool-title">CPP Obfuscator</div>
+                    <div class="tool-description">Obfuscate kode C++ untuk keamanan</div>
+                </a>
+                <a href="#" class="tool-button" data-tool="code-formatter" onclick="navigateToTool('code-formatter', event)" role="button" aria-label="Code Formatter">
+                    <div class="tool-icon">✨</div>
+                    <div class="tool-title">Code Formatter</div>
+                    <div class="tool-description">Format dan beautify kode programming</div>
+                </a>
+                <a href="#" class="tool-button" data-tool="regex-tester" onclick="navigateToTool('regex-tester', event)" role="button" aria-label="Regex Tester">
+                    <div class="tool-icon">🔤</div>
+                    <div class="tool-title">Regex Tester</div>
+                    <div class="tool-description">Test dan debug regular expressions</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Utility Tools Section -->
+        <div class="tools-category">
+            <h2 class="category-title">🛠️ Utility Tools</h2>
+            <div class="tools-grid">
+                <a href="#" class="tool-button" data-tool="hash-generator" onclick="navigateToTool('hash-generator', event)" role="button" aria-label="Hash Generator">
+                    <div class="tool-icon">🔐</div>
+                    <div class="tool-title">Hash Generator</div>
+                    <div class="tool-description">Generate MD5, SHA1, SHA256 hash</div>
+                </a>
+                <a href="#" class="tool-button" data-tool="json-formatter" onclick="navigateToTool('json-formatter', event)" role="button" aria-label="JSON Formatter">
+                    <div class="tool-icon">📋</div>
+                    <div class="tool-title">JSON Formatter</div>
+                    <div class="tool-description">Format dan validate JSON data</div>
+                </a>
+                <a href="#" class="tool-button" data-tool="base64-converter" onclick="navigateToTool('base64-converter', event)" role="button" aria-label="Base64 Converter">
+                    <div class="tool-icon">🔄</div>
+                    <div class="tool-title">Base64 Converter</div>
+                    <div class="tool-description">Encode/decode Base64 strings</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="credits">
+        <span class="typewriter">Created by Fly</span>
+    </div>
+    <audio id="background-music" loop>
+    <source src="assets/music.mp3" type="audio/mpeg">
+    Browser Anda tidak mendukung elemen audio.
+</audio>
+<iframe id="musicFrame" src="assets/music-player.html" style="display:none;"></iframe>
+    <script>
+    	document.getElementById("musicFrame").contentWindow.postMessage("pause", "*");
+document.getElementById("musicFrame").contentWindow.postMessage("play", "*");
+        // ===== TYPEWRITER EFFECT =====
+function typewriterEffect() {
+    const text = "Created by Fly";
+    const textElement = document.getElementById('typewriter-text');
+    const cursorElement = document.getElementById('typewriter-cursor');
+    let currentText = '';
+    let isDeleting = false;
+    let isTyping = false;
+    
+    function updateCursor() {
+        if (isTyping) {
+            cursorElement.classList.remove('blinking');
+            cursorElement.style.opacity = '1';
+        } else {
+            cursorElement.classList.add('blinking');
+        }
+    }
+    
+    function animate() {
+        isTyping = true;
+        updateCursor();
+        
+        if (!isDeleting) {
+            // Typing animation
+            if (currentText.length < text.length) {
+                currentText = text.substring(0, currentText.length + 1);
+                textElement.textContent = currentText;
+                setTimeout(animate, 100);
+            } else {
+                isTyping = false;
+                updateCursor();
+                setTimeout(() => {
+                    isDeleting = true;
+                    animate();
+                }, 2000);
+            }
+        } else {
+            // Deleting animation
+            if (currentText.length > 0) {
+                currentText = currentText.substring(0, currentText.length - 1);
+                textElement.textContent = currentText;
+                setTimeout(animate, 50);
+            } else {
+                isDeleting = false;
+                isTyping = false;
+                updateCursor();
+                setTimeout(animate, 1000);
+            }
+        }
+    }
+    
+    isTyping = false;
+    updateCursor();
+    setTimeout(animate, 500);
+}
+
+// ===== MENU FUNCTIONALITY =====
+function toggleMenu() {
+    const sideMenu = document.getElementById('side-menu');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const hamburgerIcon = document.getElementById('hamburger-icon');
+    
+    sideMenu.classList.toggle('open');
+    menuOverlay.classList.toggle('open');
+    hamburgerIcon.classList.toggle('open');
+}
+
+function closeMenu() {
+    const sideMenu = document.getElementById('side-menu');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const hamburgerIcon = document.getElementById('hamburger-icon');
+    
+    sideMenu.classList.remove('open');
+    menuOverlay.classList.remove('open');
+    hamburgerIcon.classList.remove('open');
+}
+
+// ===== SCROLL TO SECTION (FIXED) =====
+function scrollToTool(toolName) {
+    closeMenu();
+    
+    // Update menu active state
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.tool === toolName) {
+            item.classList.add('active');
+        }
+    });
+    
+    if (toolName === 'home') {
+        // Clear all tool highlights and reset styles when going to home
+        document.querySelectorAll('.tool-button').forEach(btn => {
+            btn.classList.remove('center-active');
+            btn.style.boxShadow = '';
+            btn.style.borderColor = '';
+        });
+        
+        // Smooth scroll to the actual home section
+        const homeSection = document.getElementById('home');
+        homeSection.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+        });
+        return;
+    }
+    
+    // Wait for menu to close completely, then scroll and highlight
+    setTimeout(() => {
+        // Find the specific tool button by data-tool attribute
+        const targetTool = document.querySelector(`.tool-button[data-tool="${toolName}"]`);
+        
+        if (targetTool) {
+            // Clear all previous highlights and reset ALL styles first
+            document.querySelectorAll('.tool-button').forEach(btn => {
+                btn.classList.remove('center-active');
+                btn.style.boxShadow = '';
+                btn.style.borderColor = '';
+            });
+            
+            // Scroll to the specific tool button
+            targetTool.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'center'
+            });
+            
+            // Add highlight after scroll
+            setTimeout(() => {
+                targetTool.classList.add('center-active');
+                
+                // Add temporary glow effect to make it more visible
+                targetTool.style.boxShadow = '0 0 30px rgba(255, 255, 255, 0.4), 0 0 60px rgba(255, 255, 255, 0.2)';
+                targetTool.style.borderColor = '#ffffff';
+                
+                // Remove temporary glow after 2 seconds
+                setTimeout(() => {
+                    if (targetTool.classList.contains('center-active')) {
+                        targetTool.style.boxShadow = '0 0 30px rgba(255, 255, 255, 0.2)';
+                    }
+                }, 2000);
+            }, 500);
+        }
+    }, 400); // Wait for menu close animation
+}
+
+// Menu item click handlers (FIXED)
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const toolName = item.dataset.tool;
+            
+            // Disable auto-highlighting for manual selections
+            setManualHighlight(8000);
+            
+            scrollToTool(toolName);
+        });
+    });
+});
+
+// ===== INTERSECTION OBSERVERS (IMPROVED) =====
+// Tools observer for center highlight - DISABLED during manual selection
+let manualHighlightActive = false;
+
+const toolsObserver = new IntersectionObserver((entries) => {
+    // Skip auto-highlighting if manual selection is active
+    if (manualHighlightActive) return;
+    
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const rect = entry.boundingClientRect;
+            const centerY = window.innerHeight / 2;
+            const elementCenter = rect.top + rect.height / 2;
+            const distance = Math.abs(centerY - elementCenter);
+            
+            // Only auto-highlight if no manual selection is active
+            if (distance < 150) {
+                // Reset all styles before auto-highlighting
+                document.querySelectorAll('.tool-button').forEach(btn => {
+                    btn.classList.remove('center-active');
+                    btn.style.boxShadow = '';
+                    btn.style.borderColor = '';
+                });
+                entry.target.classList.add('center-active');
+            }
+        }
+    });
+}, {
+    threshold: 0.3,
+    rootMargin: '-100px 0px -100px 0px'
+});
+
+// Function to temporarily disable auto-highlighting
+function setManualHighlight(duration = 5000) {
+    manualHighlightActive = true;
+    setTimeout(() => {
+        manualHighlightActive = false;
+    }, duration);
+}
+
+// Animation observer
+const animationObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+            animationObserver.unobserve(entry.target);
+        }
+    });
+}, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+});
+
+// ===== INITIALIZATION =====
+window.addEventListener('load', function() {
+    const buttons = document.querySelectorAll('.tool-button');
+    
+    setTimeout(typewriterEffect, 1000);
+    
+    buttons.forEach((button) => {
+        animationObserver.observe(button);
+        toolsObserver.observe(button);
+    });
+});
+
+// ===== TOOL NAVIGATION (FIXED) =====
+function navigateToTool(toolName) {
+    // Prevent default behavior and get the actual clicked element
+    const clickedButton = event.currentTarget || event.target.closest('.tool-button');
+    
+    // Visual feedback with proper scaling
+    if (clickedButton) {
+        clickedButton.style.transition = 'transform 0.15s ease';
+        clickedButton.style.transform = 'scale(0.95)';
+        
+        // Add light effect
+        clickedButton.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.1)';
+        clickedButton.style.background = 'linear-gradient(145deg, #3a3a3a, #2a2a2a)';
+        
+        setTimeout(() => {
+            clickedButton.style.transform = '';
+            clickedButton.style.boxShadow = '';
+            clickedButton.style.background = '';
+        }, 200);
+    }
+    
+    console.log(`Navigating to ${toolName} tool...`);
+    // Show alert without scrolling to top
+    setTimeout(() => {
+        alert(`Tool "${toolName}" akan segera tersedia!`);
+    }, 2000);
+    
+    // Prevent any scroll behavior
+    return false;
+}
+
+// ===== INTERACTIVE EFFECTS (IMPROVED) =====
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.tool-button').forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('center-active')) {
+                this.style.background = 'linear-gradient(145deg, #2a2a2a, #1a1a1a)';
+                this.style.boxShadow = '0 8px 25px rgba(255, 255, 255, 0.1)';
+            }
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('center-active')) {
+                this.style.background = 'linear-gradient(145deg, #1a1a1a, #0a0a0a)';
+                this.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.4)';
+                this.style.borderColor = ''; // Reset border color on mouse leave
+            }
+        });
+        
+        // Add click effect
+        button.addEventListener('mousedown', function() {
+            this.style.transform = 'scale(0.98)';
+        });
+        
+        button.addEventListener('mouseup', function() {
+            this.style.transform = '';
+        });
+    });
+});
+
+// ===== BACKGROUND PARTICLES =====
+function createParticle() {
+    const particle = document.createElement('div');
+    particle.className = 'background-particle';
+    particle.style.top = Math.random() * 100 + '%';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 6 + 's';
+    document.body.appendChild(particle);
+
+    setTimeout(() => {
+        particle.remove();
+    }, 6000);
+}
+
+setInterval(createParticle, 3000);
+
+// ===== KEYBOARD NAVIGATION =====
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeMenu();
+    }
+});
+
+// ===== PREVENT UNWANTED SCROLLING =====
+document.addEventListener('click', function(e) {
+    // Prevent hash links from causing scroll jumps
+    if (e.target.closest('a[href^="#"]') && !e.target.closest('.menu-item')) {
+        e.preventDefault();
+    }
+});
+
+// ===== SMOOTH SCROLL ENHANCEMENT =====
+window.addEventListener('beforeunload', function() {
+    window.scrollTo(0, 0);
+});
+    </script>
+
+</body>
+</html>
