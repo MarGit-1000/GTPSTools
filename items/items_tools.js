@@ -175,7 +175,7 @@ function check_last_char(dest, src) {
     return dest[dest.length - 1] == src
 }
 
-export function process_item_encoder(result, using_txt) {
+function process_item_encoder(result, using_txt) {
     var mem_pos = 6;
 
     if (using_txt) {
@@ -543,7 +543,7 @@ export function process_item_encoder(result, using_txt) {
  * @param {boolean} using_editor
  */
 
-function item_encoder(file, using_editor) {
+export function item_encoder(file, using_editor) {
     if (using_editor) {
         process_item_encoder(data_json, 0);
         saveDataBuffer(encoded_buffer_file, "items.dat")
