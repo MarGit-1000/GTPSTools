@@ -22,7 +22,16 @@ function hexStringToBuffer(buf, pos, hexString) { hexString = hexString.replace(
 
 function calcHash(buffer, length) { let hash = 0x55555555; for (let i = 0; i < length; i++) { hash = (hash >>> 27) + (hash << 5) + buffer[i]; } return hash >>> 0; // ensure unsigned }
 
-function encodeItems(data) { const buf = createBuffer(); let pos = 0;
+function encodeItems(data) 
+if (!data || !data.items || !Array.isArray(data.items)) {
+    throw new Error("Format data tidak valid");
+  }
+  
+  if (!data.version || typeof data.version !== 'number') {
+    throw new Error("Versi items.dat tidak valid");
+  }
+
+{ const buf = createBuffer(); let pos = 0;
 
 writeNumber(buf, pos, 2, data.version); writeNumber(buf, pos + 2, 4, data.item_count); pos = 6;
 
