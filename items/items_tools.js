@@ -543,7 +543,7 @@ function process_item_encoder(result, using_txt) {
  * @param {boolean} using_editor
  */
 
-export function item_encoder(file, using_editor) {
+function item_encoder(file, using_editor) {
     if (using_editor) {
         process_item_encoder(data_json, 0);
         saveDataBuffer(encoded_buffer_file, "items.dat")
