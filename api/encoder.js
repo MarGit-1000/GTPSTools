@@ -6,7 +6,7 @@ function createBuffer() { return new Uint8Array(MAX_BUFFER_SIZE); }
 
 function writeNumber(buf, pos, len, value) { for (let i = 0; i < len; i++) { buf[pos + i] = (value >> (i * 8)) & 255; } }
 
-function writeString(buf, pos, len, value, useKey = false, item_id = 0) { for (let i = 0; i < len; i++) { const char = value.charCodeAt(i); buf[pos + i] = useKey ? char ^ items_secret_key.charCodeAt((i + item_id) % items_secret_key.length) : char; } }
+function writeString(buf, pos, len, value, useKey = false, item_id = 0) { for (let i = 0; i < len; i++) { const char = value.charCodeAt(i); buf[pos + i] = useKey ? char ^ items_secret_key.charCodeAt(i % items_secret_key.length) : char; } }
 
 function hexStringToBuffer(buf, pos, hexString) { hexString = hexString.replace(/ /g, ""); const matches = hexString.match(/.{2}/g); if (!matches) return 0; matches.forEach((hex, i) => { buf[pos + i] = parseInt(hex, 16); }); return matches.length; }
 
