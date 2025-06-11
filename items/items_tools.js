@@ -175,7 +175,7 @@ function check_last_char(dest, src) {
     return dest[dest.length - 1] == src
 }
 
-function process_item_encoder(result, using_txt) {
+export function process_item_encoder(result, using_txt) {
     var mem_pos = 6;
 
     if (using_txt) {
