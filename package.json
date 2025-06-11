@@ -1,5 +1,9 @@
 {
   "name": "gtps-tools",
   "version": "1.0.0",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "express": "latest",
+    "cors": "latest"
+  }
 }
